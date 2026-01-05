@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* Viswam OTT - Luxurious Gold & Brown Design System */
+
+@layer base {
+  :root {
+    /* Core colors - Premium gold/brown palette */
+    --background: 30 15% 12%;
+    --foreground: 40 30% 95%;
+
+    --card: 30 20% 18%;
+    --card-foreground: 40 30% 95%;
+
+    --popover: 30 20% 18%;
+    --popover-foreground: 40 30% 95%;
+
+    /* Primary: Rich Gold */
+    --primary: 45 80% 55%;
+    --primary-foreground: 30 30% 10%;
+
+    /* Secondary: Warm Brown */
+    --secondary: 30 25% 25%;
+    --secondary-foreground: 40 30% 95%;
+
+    /* Muted: Subtle brown */
+    --muted: 30 15% 20%;
+    --muted-foreground: 35 20% 60%;
+
+    /* Accent: Cream Gold */
+    --accent: 40 50% 75%;
+    --accent-foreground: 30 30% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 35 20% 30%;
+    --input: 0 0% 100%;
+    --ring: 45 80% 55%;
+
+    --radius: 0.375rem;
+
+    /* Custom tokens */
+    --gold: 45 80% 55%;
+    --gold-light: 42 70% 70%;
+    --gold-dark: 40 60% 40%;
+    --cream: 40 40% 90%;
+    --brown-dark: 25 30% 12%;
+    --brown-medium: 28 25% 22%;
+    --brown-light: 32 20% 35%;
+
+    /* Gradients */
+    --gradient-luxury: linear-gradient(135deg, 
+      hsl(35 35% 75%) 0%, 
+      hsl(30 25% 50%) 25%, 
+      hsl(25 30% 20%) 50%, 
+      hsl(20 35% 12%) 75%,
+      hsl(30 25% 25%) 100%);
+    
+    --gradient-gold: linear-gradient(135deg, 
+      hsl(45 80% 55%) 0%, 
+      hsl(40 70% 45%) 100%);
+
+    /* Shadows */
+    --shadow-gold: 0 4px 30px hsl(45 80% 55% / 0.3);
+    --shadow-soft: 0 8px 32px hsl(0 0% 0% / 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  .luxury-input {
+    @apply w-full px-4 py-3 bg-input text-primary-foreground rounded-md 
+           border-0 outline-none transition-all duration-300
+           placeholder:text-muted-foreground/70
+           focus:ring-2 focus:ring-primary/50;
+  }
+
+  .gold-button {
+    @apply w-full py-3 px-6 rounded-md font-medium
+           bg-gradient-to-r from-primary to-gold-light
+           text-primary-foreground
+           transition-all duration-300
+           hover:shadow-gold hover:scale-[1.02]
+           active:scale-[0.98];
+  }
+
+  .glass-card {
+    @apply backdrop-blur-xl bg-card/40 border border-border/30 rounded-2xl;
+  }
+}
+
+/* Flowing gold line animation */
+@keyframes flowLine {
+  0% {
+    stroke-dashoffset: 1000;
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.3;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-flow {
+  animation: flowLine 8s ease-in-out infinite alternate;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(45 80% 55% / 0) 0%,
+    hsl(45 80% 55% / 0.3) 50%,
+    hsl(45 80% 55% / 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
