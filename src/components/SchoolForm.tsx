@@ -3,6 +3,7 @@ import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface SchoolFormProps {
   onClose: () => void;
@@ -82,8 +83,8 @@ const SchoolForm = ({ onClose, onSuccess, school }: SchoolFormProps) => {
       }
 
       const url = isEditMode 
-        ? `https://viswam-ott-backend-production.up.railway.app/api/schools/${school._id}`
-        : "https://viswam-ott-backend-production.up.railway.app/api/schools";
+        ? API_ENDPOINTS.SCHOOLS.BY_ID(school._id)
+        : API_ENDPOINTS.SCHOOLS.BASE;
       
       const method = isEditMode ? "PUT" : "POST";
 

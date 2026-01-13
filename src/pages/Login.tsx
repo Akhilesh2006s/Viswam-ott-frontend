@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import luxuryBg from "@/assets/luxury-bg.jpg";
 import LoginForm from "@/components/LoginForm";
 import GoldLines from "@/components/GoldLines";
@@ -24,12 +25,12 @@ const Login = () => {
         <div>
           <LoginForm />
           <div className="mt-4 text-center">
-            <a
-              href="/super-admin/login"
+            <Link
+              to="/super-admin/login"
               className="text-primary hover:text-gold-light transition-colors font-medium text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]"
             >
               Super Admin Login
-            </a>
+            </Link>
           </div>
         </div>
       </div>

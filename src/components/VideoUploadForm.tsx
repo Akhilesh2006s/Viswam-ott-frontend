@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface VideoUploadFormProps {
   onClose: () => void;
@@ -97,7 +98,7 @@ const VideoUploadForm = ({ onClose, onSuccess, subjects }: VideoUploadFormProps)
       uploadData.append("duration", formData.duration || "");
       uploadData.append("isDownloadable", formData.isDownloadable.toString());
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/videos", {
+      const response = await fetch(API_ENDPOINTS.VIDEOS.BASE, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import { API_ENDPOINTS } from "@/config/api";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const LoginForm = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/auth/school/login", {
+      const response = await fetch(API_ENDPOINTS.AUTH.SCHOOL_LOGIN, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

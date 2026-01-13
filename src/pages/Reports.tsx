@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Download, Calendar, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { API_ENDPOINTS } from "@/config/api";
 
 const Reports = () => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const Reports = () => {
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
       const response = await fetch(
-        `https://viswam-ott-backend-production.up.railway.app/api/reports?startDate=${startOfMonth.toISOString()}&endDate=${endOfMonth.toISOString()}`,
+        `${API_ENDPOINTS.REPORTS.BASE}?startDate=${startOfMonth.toISOString()}&endDate=${endOfMonth.toISOString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -122,7 +123,7 @@ const Reports = () => {
       const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
       const response = await fetch(
-        `https://viswam-ott-backend-production.up.railway.app/api/reports/subject-wise?startDate=${startOfMonth.toISOString()}&endDate=${endOfMonth.toISOString()}`,
+        `${API_ENDPOINTS.REPORTS.SUBJECT_WISE}?startDate=${startOfMonth.toISOString()}&endDate=${endOfMonth.toISOString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

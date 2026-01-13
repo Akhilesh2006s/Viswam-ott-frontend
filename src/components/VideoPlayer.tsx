@@ -3,6 +3,7 @@ import { X, Play, Pause, Volume2, VolumeX, Maximize, Download, CheckCircle } fro
 import { Button } from "@/components/ui/button";
 import premiumBg from "@/assets/luxury-bg.jpg";
 import { offlineStorage } from "@/services/offlineStorage";
+import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
 
 interface VideoPlayerProps {
   video: {
@@ -36,6 +37,19 @@ const VideoPlayer = ({ video, onClose }: VideoPlayerProps) => {
   useEffect(() => {
     const checkDownloaded = async () => {
       try {
+        // Check Electron file system first
+        if (window.electronAPI) {
+          const filePath = await window.electronAPI.getVideoFilePath(video._id);
+          if (filePath) {
+            // Use file:// protocol for Electron
+            const fileUrl = `file://${filePath}`;
+            setOfflineUrl(fileUrl);
+            setIsDownloaded(true);
+            return;
+          }
+        }
+        
+        // Fallback to IndexedDB
         await offlineStorage.init();
         const downloaded = await offlineStorage.isVideoDownloaded(video._id);
         setIsDownloaded(downloaded);
@@ -53,7 +67,7 @@ const VideoPlayer = ({ video, onClose }: VideoPlayerProps) => {
   // Construct full video URL - prefer offline if available
   const videoSrc = offlineUrl || (video.videoUrl.startsWith('http') 
     ? video.videoUrl 
-    : `https://viswam-ott-backend-production.up.railway.app${video.videoUrl}`);
+    : `${API_BASE_URL}${video.videoUrl}`);
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -166,7 +180,7 @@ const VideoPlayer = ({ video, onClose }: VideoPlayerProps) => {
       await offlineStorage.init();
 
       // Fetch video with progress tracking
-      const response = await fetch(`https://viswam-ott-backend-production.up.railway.app/api/videos/${video._id}/download`, {
+      const response = await fetch(API_ENDPOINTS.VIDEOS.DOWNLOAD(video._id), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -207,37 +221,102 @@ const VideoPlayer = ({ video, onClose }: VideoPlayerProps) => {
       // Combine chunks into a single blob
       const blob = new Blob(chunks, { type: "video/mp4" });
 
-      // Save to IndexedDB
-      await offlineStorage.saveVideo({
-        id: `video_${video._id}`,
-        videoId: video._id,
-        title: video.title,
-        description: video.description,
-        videoData: blob,
-        thumbnailUrl: video.thumbnailUrl,
-        duration: video.duration,
-        subject: video.subjectId?.name || "Unknown",
-        class: video.class,
-        downloadedAt: Date.now(),
-      });
+      // Check if running in Electron
+      if (window.electronAPI) {
+        // Convert blob to base64 for Electron
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          try {
+            const base64data = reader.result as string;
+            const base64Content = base64data.split(',')[1]; // Remove data:video/mp4;base64, prefix
 
-      // Create object URL for immediate use
-      const url = URL.createObjectURL(blob);
-      setOfflineUrl(url);
-      setIsDownloaded(true);
-      setDownloadProgress(100);
+            // Save to file system via Electron
+            const result = await window.electronAPI.saveVideoFile({
+              videoId: video._id,
+              videoData: base64Content,
+              metadata: {
+                id: `video_${video._id}`,
+                videoId: video._id,
+                title: video.title,
+                description: video.description,
+                thumbnailUrl: video.thumbnailUrl,
+                duration: video.duration,
+                subject: video.subjectId?.name || "Unknown",
+                class: video.class,
+                downloadedAt: Date.now(),
+              }
+            });
 
-      // Update video source to use offline version
-      if (videoRef.current) {
-        videoRef.current.src = url;
-        videoRef.current.load();
+            if (result.success && result.filePath) {
+              // Use file:// protocol for Electron
+              const fileUrl = `file://${result.filePath}`;
+              setOfflineUrl(fileUrl);
+              setIsDownloaded(true);
+              setDownloadProgress(100);
+
+              if (videoRef.current) {
+                videoRef.current.src = fileUrl;
+                videoRef.current.load();
+              }
+
+              // Notify Electron to resize window
+              window.electronAPI.onVideoDownloaded({
+                videoId: video._id,
+                title: video.title
+              });
+
+              // Refresh school data
+              window.dispatchEvent(new CustomEvent('videoDownloaded'));
+
+              alert(`Video downloaded successfully!\nSaved to: ${result.filePath}`);
+            } else {
+              throw new Error(result.error || "Failed to save video file");
+            }
+          } catch (error: any) {
+            console.error("Electron save error:", error);
+            throw error;
+          } finally {
+            setIsDownloading(false);
+            setTimeout(() => setDownloadProgress(0), 2000);
+          }
+        };
+        reader.onerror = () => {
+          throw new Error("Failed to read video blob");
+        };
+        reader.readAsDataURL(blob);
+        return; // Exit early, completion handled in reader.onloadend
+      } else {
+        // Fallback to IndexedDB for browser mode
+        await offlineStorage.saveVideo({
+          id: `video_${video._id}`,
+          videoId: video._id,
+          title: video.title,
+          description: video.description,
+          videoData: blob,
+          thumbnailUrl: video.thumbnailUrl,
+          duration: video.duration,
+          subject: video.subjectId?.name || "Unknown",
+          class: video.class,
+          downloadedAt: Date.now(),
+        });
+
+        // Create object URL for immediate use
+        const url = URL.createObjectURL(blob);
+        setOfflineUrl(url);
+        setIsDownloaded(true);
+        setDownloadProgress(100);
+
+        // Update video source to use offline version
+        if (videoRef.current) {
+          videoRef.current.src = url;
+          videoRef.current.load();
+        }
+
+        // Refresh school data to update quota (if on download requests page)
+        window.dispatchEvent(new CustomEvent('videoDownloaded'));
+
+        alert("Video downloaded successfully! You can now watch it offline.");
       }
-
-      // Refresh school data to update quota (if on download requests page)
-      // Dispatch a custom event that DownloadRequests page can listen to
-      window.dispatchEvent(new CustomEvent('videoDownloaded'));
-
-      alert("Video downloaded successfully! You can now watch it offline.");
     } catch (error: any) {
       console.error("Download error:", error);
       alert(error.message || "Failed to download video. Please try again.");
@@ -298,7 +377,13 @@ const VideoPlayer = ({ video, onClose }: VideoPlayerProps) => {
               </Button>
             )}
             <button
-              onClick={onClose}
+              onClick={() => {
+                // Notify Electron to reset window size
+                if (window.electronAPI) {
+                  window.electronAPI.onVideoPlayerClosed();
+                }
+                onClose();
+              }}
               className="text-[hsl(40,35%,85%)] hover:text-[hsl(40,40%,90%)] transition-colors p-2"
             >
               <X className="w-6 h-6" />
@@ -312,7 +397,7 @@ const VideoPlayer = ({ video, onClose }: VideoPlayerProps) => {
             ref={videoRef}
             src={videoSrc}
             className="w-full h-auto max-h-[70vh]"
-            poster={video.thumbnailUrl ? `https://viswam-ott-backend-production.up.railway.app${video.thumbnailUrl}` : undefined}
+            poster={video.thumbnailUrl ? `${API_BASE_URL}${video.thumbnailUrl}` : undefined}
             controls={false}
           />
 

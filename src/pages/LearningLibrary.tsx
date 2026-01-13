@@ -4,6 +4,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { ChevronRight, Play, CheckCircle } from "lucide-react";
 import VideoPlayer from "@/components/VideoPlayer";
 import { offlineStorage } from "@/services/offlineStorage";
+import { API_ENDPOINTS } from "@/config/api";
 
 const LearningLibrary = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const LearningLibrary = () => {
         return;
       }
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/subjects", {
+      const response = await fetch(API_ENDPOINTS.SUBJECTS.BASE, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -106,7 +107,7 @@ const LearningLibrary = () => {
 
   const fetchVideosForSubject = async (subjectId: string, token: string) => {
     try {
-      const response = await fetch(`https://viswam-ott-backend-production.up.railway.app/api/subjects/${subjectId}/videos`, {
+      const response = await fetch(API_ENDPOINTS.SUBJECTS.VIDEOS(subjectId), {
         headers: {
           Authorization: `Bearer ${token}`,
         },

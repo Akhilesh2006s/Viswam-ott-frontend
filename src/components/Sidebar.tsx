@@ -7,7 +7,8 @@ import {
   Download, 
   User, 
   LogOut,
-  Search
+  Search,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
@@ -21,6 +22,7 @@ const Sidebar = () => {
     { path: "/subjects", label: "Subjects", icon: GraduationCap },
     { path: "/reports", label: "Reports", icon: FileText },
     { path: "/download-requests", label: "Download Requests", icon: Download },
+    { path: "/settings", label: "Settings", icon: Settings },
   ];
 
   return (

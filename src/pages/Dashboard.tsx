@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { BookOpen, Video, HardDrive, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/schools/dashboard", {
+      const response = await fetch(API_ENDPOINTS.SCHOOLS.DASHBOARD, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -248,7 +249,7 @@ const Dashboard = () => {
                   <div className="relative">
                     {video.thumbnailUrl ? (
                       <img
-                        src={`https://viswam-ott-backend-production.up.railway.app${video.thumbnailUrl}`}
+                        src={`${API_BASE_URL}${video.thumbnailUrl}`}
                         alt={video.title}
                         className="w-full aspect-video object-cover"
                       />

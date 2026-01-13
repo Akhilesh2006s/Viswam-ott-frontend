@@ -3,6 +3,7 @@ import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface SubjectFormProps {
   onClose: () => void;
@@ -70,8 +71,8 @@ const SubjectForm = ({ onClose, onSuccess, subject }: SubjectFormProps) => {
       }
 
       const url = isEditMode 
-        ? `https://viswam-ott-backend-production.up.railway.app/api/subjects/${subject._id}`
-        : "https://viswam-ott-backend-production.up.railway.app/api/subjects";
+        ? API_ENDPOINTS.SUBJECTS.BY_ID(subject._id)
+        : API_ENDPOINTS.SUBJECTS.BASE;
       
       const method = isEditMode ? "PUT" : "POST";
 

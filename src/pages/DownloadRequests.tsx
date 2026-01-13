@@ -5,6 +5,7 @@ import { Download, Clock, CheckCircle, XCircle, Plus, Play, Trash2 } from "lucid
 import { Button } from "@/components/ui/button";
 import { offlineStorage } from "@/services/offlineStorage";
 import VideoPlayer from "@/components/VideoPlayer";
+import { API_ENDPOINTS } from "@/config/api";
 
 const DownloadRequests = () => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ const DownloadRequests = () => {
       }
 
       // Fetch current school data from backend to get updated quota
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/auth/school/me", {
+      const response = await fetch(API_ENDPOINTS.AUTH.SCHOOL_ME, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -138,7 +139,7 @@ const DownloadRequests = () => {
         return;
       }
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/downloads/requests", {
+      const response = await fetch(API_ENDPOINTS.DOWNLOADS.REQUESTS, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

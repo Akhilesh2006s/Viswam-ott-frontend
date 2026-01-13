@@ -22,6 +22,7 @@ import SubjectForm from "@/components/SubjectForm";
 import VideoPlayer from "@/components/VideoPlayer";
 import SchoolForm from "@/components/SchoolForm";
 import logo from "@/assets/logo.png";
+import { API_BASE_URL, API_ENDPOINTS } from "@/config/api";
 
 const SuperAdminDashboard = () => {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const SuperAdminDashboard = () => {
         return;
       }
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/dashboard/stats", {
+      const response = await fetch(API_ENDPOINTS.DASHBOARD.STATS, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -103,7 +104,7 @@ const SuperAdminDashboard = () => {
         return;
       }
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/subjects", {
+      const response = await fetch(API_ENDPOINTS.SUBJECTS.BASE, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -148,7 +149,7 @@ const SuperAdminDashboard = () => {
         return;
       }
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/videos", {
+      const response = await fetch(API_ENDPOINTS.VIDEOS.BASE, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -202,7 +203,7 @@ const SuperAdminDashboard = () => {
         return;
       }
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/schools", {
+      const response = await fetch(API_ENDPOINTS.SCHOOLS.BASE, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -251,7 +252,7 @@ const SuperAdminDashboard = () => {
         return;
       }
 
-      const response = await fetch(`https://viswam-ott-backend-production.up.railway.app/api/schools/${schoolId}`, {
+      const response = await fetch(API_ENDPOINTS.SCHOOLS.BY_ID(schoolId), {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -296,7 +297,7 @@ const SuperAdminDashboard = () => {
         return;
       }
 
-      const response = await fetch(`https://viswam-ott-backend-production.up.railway.app/api/subjects/${subjectId}`, {
+      const response = await fetch(API_ENDPOINTS.SUBJECTS.BY_ID(subjectId), {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -481,7 +482,7 @@ const SuperAdminDashboard = () => {
                       {video.thumbnailUrl && (
                         <div className="relative mb-3 rounded-lg overflow-hidden bg-black aspect-video">
                           <img
-                            src={`https://viswam-ott-backend-production.up.railway.app${video.thumbnailUrl}`}
+                            src={`${API_BASE_URL}${video.thumbnailUrl}`}
                             alt={video.title}
                             className="w-full h-full object-cover"
                           />

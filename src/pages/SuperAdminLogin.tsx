@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import luxuryBg from "@/assets/luxury-bg.jpg";
 import logo from "@/assets/logo.png";
 import GoldLines from "@/components/GoldLines";
 import { Button } from "@/components/ui/button";
+import { API_ENDPOINTS } from "@/config/api";
 
 const SuperAdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -12,13 +13,16 @@ const SuperAdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Debug: Log when component mounts
+  console.log('SuperAdminLogin component mounted');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/auth/super-admin/login", {
+      const response = await fetch(API_ENDPOINTS.AUTH.SUPER_ADMIN_LOGIN, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,12 +133,12 @@ const SuperAdminLogin = () => {
 
           {/* Back to School Login */}
           <div className="mt-8 text-center">
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="text-primary hover:text-gold-light transition-colors font-medium text-sm drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]"
             >
               School Login
-            </a>
+            </Link>
           </div>
         </div>
       </div>

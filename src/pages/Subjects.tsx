@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Link } from "react-router-dom";
+import { API_ENDPOINTS } from "@/config/api";
 
 const Subjects = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const Subjects = () => {
         return;
       }
 
-      const response = await fetch("https://viswam-ott-backend-production.up.railway.app/api/subjects", {
+      const response = await fetch(API_ENDPOINTS.SUBJECTS.BASE, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
