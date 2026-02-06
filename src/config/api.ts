@@ -1,5 +1,6 @@
 // API Configuration
-export const API_BASE_URL = 'https://viswam-ott-backend-production.up.railway.app';
+// Point to the deployed Railway backend server
+export const API_BASE_URL = 'https://viswam-ott-backend-production-812b.up.railway.app';
 
 export const API_ENDPOINTS = {
   // Authentication
